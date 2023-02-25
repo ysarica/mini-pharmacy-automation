@@ -1,0 +1,118 @@
+﻿
+@{
+    ViewBag.Title = "Hastalar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using EczaneOtomasyon.Models;
+@section baslik{ Hastalar}
+@section sitemap{ Hastalar}
+@section title{ Hastalar}
+@model IEnumerable<EczaneOtomasyon.Models.TBLKullanici>
+@{
+    EczaneDB db = new EczaneDB();
+}
+
+<div class="card card-outline card-primarycard-outline card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Hastalar</h3>
+        <div class="card-tools">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#hastaekle"><i class="fas fa-plus"></i> Hasta Ekle</button>
+        </div>
+    </div>
+
+
+    <!-- /.card-header -->
+    <div class="card-body table-responsive">
+        <table id="listele1" class="table table-bordered table-striped table-responsive">
+            <thead>
+                <tr>
+                    <th width="1%">ID</th>
+                    <th width="1%">Hasta Adı</th>
+                    <th width="1%">Hasta TC</th>
+                    <th width="1%">Hasta Cinsiyet</th>
+                    <th width="1%">İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var a in Model)
+                {
+                    <tr>
+                        <td>@a.KID</td>
+                        <td>@a.AdSoyad</td>
+                        <td>@a.TC</td>
+                        <td>@a.Cinsiyet</td>
+                        <td>
+                            <div class="btn-group btn-block">
+                                <a href="/Hekim/HastaDetay?HastaID=@a.KID" class="btn btn-info"> Hasta Detay</a>
+                                <a href="/Hekim/_HastaSil?HastaID=@a.KID" class="btn btn-danger"> Hasta Sil</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th width="1%">ID</th>
+                    <th width="1%">Hasta Adı</th>
+                    <th width="1%">Hasta TC</th>
+                    <th width="1%">Hasta Cinsiyet</th>
+                    <th width="1%">İşlem</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <!-- /.card-body -->
+</div>
+<div class="modal fade bd-example-modal-lg" id="hastaekle" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">İlaç Ekle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Html.BeginForm("_HastaEkle", "Hekim", FormMethod.Post, new { @class = "form-horizontal", @id = "form_sample_1", @enctype = "multipart/form-data" }))
+            {
+                <div class="modal-body">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Hasta TC:</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-check"></i></span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Hasta TC Kmilik" id="TC" name="TC">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Hasta Adı Soyadı:</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-check"></i></span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Hasta Adı Soyadı" id="AdSoyad" name="AdSoyad">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Hasta Cinsiyet:</label>
+                            <div class="input-group">
+
+                                <select class="form-control " name="Cinsiyet" id="Cinsiyet" style="width: 100%;">
+                                    <option selected="" disabled="">Cinsiyet</option>
+                                    <option value="Erkek">Erkek</option>
+                                    <option value="Kadın">Kadın</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Çık</button>
+                    <button type="submit" class="btn btn-success">Ekle</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,159 @@
+﻿
+@{
+    ViewBag.Title = "ReceteYaz";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using EczaneOtomasyon.Models;
+@section baslik{ Reçete Yaz}
+@section sitemap{ Reçete Yaz}
+@section title{ Hastayı Seçiniz}
+@model IEnumerable<EczaneOtomasyon.Models.TBLKullanici>
+@{
+    EczaneDB db = new EczaneDB();
+    int KID = Convert.ToInt32(Session["HastaID"]);
+    int DID = Convert.ToInt32(Session["KullaniciID"].ToString());
+
+    TBLKullanici k = db.TBLKullanici.Where(x => x.KID == KID).SingleOrDefault();
+    TBLKullanici d = db.TBLKullanici.Where(x => x.KID == DID).SingleOrDefault();
+    int kKat = Convert.ToInt32(d.KullaniciKat);
+    TBLBolum dokb = db.TBLBolum.Where(x => x.BID == kKat).SingleOrDefault();
+}
+<div class="card card-primary card-outline">
+    <div class="card-header">
+        <h3 class="card-title">Recete Bilgileri</h3>
+
+    </div>
+
+    <!-- /.card-header -->
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-6">
+                <strong><i class="fa fa-address-card"></i> Hasta TC</strong>
+                <p class="text-muted">
+                    @k.TC
+                </p>
+                <hr>
+                <strong><i class="fa fa-user-circle"></i> Hasta Adı Soyadı</strong>
+                <p class="text-muted">
+                    @k.KID - @k.AdSoyad
+                </p>
+                <hr>
+                <strong><i class="fa fa-calendar"></i> Hasta Cinsiyet </strong>
+                <p class="text-muted">
+                    @k.Cinsiyet
+                </p>
+                <hr>
+            </div>
+            <div class="col-lg-6">
+                <strong><i class="fa fa-star"></i> Doktor Adı</strong>
+                <p class="text-muted">
+                    @d.AdSoyad
+                </p>
+                <hr>
+                <strong><i class="fa fa-calendar"></i> Doktor Bölümü</strong>
+                <p class="text-muted">
+                    @dokb.BAdi
+                </p>
+                <hr>
+
+                <strong><i class="fa fa-calendar"></i> Tarih</strong>
+                <p class="text-muted">
+                    @DateTime.Now.ToShortDateString()
+
+                </p>
+                <hr>
+            </div>
+
+        </div>
+
+     
+        <!--Burası İçerisi-->
+    </div>
+    <!-- /.card-body -->
+</div>
+<div class="card card-outline card-primarycard-outline card-primary">
+    <!-- /.card-header -->
+   <div class="card-body table-responsive">
+       @using (Html.BeginForm("_rIlacEkle", "Hekim", FormMethod.Post, new { @class = "form-horizontal", @id = "form_sample_1", @enctype = "multipart/form-data" }))
+            { <div class="row">
+
+           <div class="col-lg-6">
+               @{
+                   List<TBLIlaclar> ilac = db.TBLIlaclar.Where(x => x.IlacKategori == d.KullaniciKat).ToList();
+               }
+               <strong><i class="fa fa-star"></i> İlaçlar</strong>
+               <select class="select2 form-control " name="gIlacID" id="gIlacID" style="width: 100%;">
+                   @*<option selected="" value="0" disabled="">İlaç Seç</option>*@
+                   @foreach (var il in ilac)
+                {
+                    int ilk = Convert.ToInt32(il.IlacKategori); TBLBolum bol = db.TBLBolum.Where(x => x.BID == ilk).SingleOrDefault();
+
+                       <option value="@il.IID">@il.IlacAdi - @bol.BAdi</option>
+                   }
+               </select>
+
+           </div>
+           <div class="col-lg-3">
+               <strong><i class="fa fa-star"></i> Adet</strong>
+               <input type="number" value="1" class="form-control" name="gAdet" id="gAdet" placeholder="İlaç Adeti">
+
+           </div>
+           <div class="col-lg-3">
+               <strong><i class="fa fa-star"></i> İşlem</strong>
+
+               <button type="submit" class="btn btn-primary btn-block">Reçeteye Ekle</button>
+
+           </div>
+
+       </div>}
+       <br />
+
+   <table id="listele1" class="table table-bordered table-striped table-responsive">
+                <thead>
+                    <tr>
+                        <th width="1%">ID</th>
+                        <th width="1%">İlaç</th>
+                        <th width="1%">Adet</th>
+                        <th width="1%">İşlem</th>
+                    </tr>
+                </thead>
+       @{ 
+           int RecID =Convert.ToInt32(Session["RecID"].ToString());
+          
+               List<TBLReceteIlac> ilaclist = db.TBLReceteIlac.Where(x => x.ReceteID == RecID).ToList();
+
+       }
+                <tbody>
+                    @foreach (var a in ilaclist)
+                    {
+                        <tr>
+                            @{
+                                TBLIlaclar ilac = db.TBLIlaclar.Where(x => x.IID == a.IlacID).SingleOrDefault(); ;
+                            }
+                            <td>@a.RIlacID</td>
+                            <td>@ilac.IlacAdi</td>
+                            <td>@a.Adet</td>
+                            <td>
+                                <div class="btn-group btn-block">
+                                    <a href="/Hekim/_RilacSil?IlacID=@a.RIlacID" class="btn btn-danger"> Sil</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th width="1%">ID</th>
+                        <th width="1%">İlaç</th>
+                        <th width="1%">Adet</th>
+                        <th width="1%">İşlem</th>
+                    </tr>
+                </tfoot>
+            </table>
+       <br />
+       <div class="row">
+           <a href="/Hekim/ReceteOnay/" class="btn btn-success btn-lg btn-block">Reçeteyi Onayla</a>
+       </div>
+        </div>
+    <!-- /.card-body -->
+</div>

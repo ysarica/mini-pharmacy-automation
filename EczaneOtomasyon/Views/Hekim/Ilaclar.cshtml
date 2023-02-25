@@ -1,0 +1,98 @@
+﻿
+@{
+    ViewBag.Title = "Ilaclar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using EczaneOtomasyon.Models;
+@section baslik{ İlaçlar}
+@section sitemap{ İlaçlar}
+@section title{ İlaçlar}
+@model IEnumerable<EczaneOtomasyon.Models.TBLIlaclar>
+@{
+    EczaneDB db = new EczaneDB();
+}
+
+<div class="card card-outline card-primarycard-outline card-primary">
+    <div class="card-header">
+        <h3 class="card-title">İlaçlar (Sadece Bölümünüzle İlgili İlaçlar Ekleyebilir Görüntüleyebilirsiniz)</h3>
+        <div class="card-tools">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#hastaekle"><i class="fas fa-plus"></i> İlaç Ekle</button>
+        </div>
+    </div>
+
+
+    <!-- /.card-header -->
+    <div class="card-body table-responsive">
+        <table id="listele1" class="table table-bordered table-striped table-responsive">
+            <thead>
+                <tr>
+                    <th width="1%">ID</th>
+                    <th width="1%">İlaç Adı</th>
+                    <th width="1%">İlaç Kategori</th>
+                    <th width="1%">İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var a in Model)
+                {
+                    <tr>
+                        @{ 
+                            int k = Convert.ToInt32(a.IlacKategori);
+                            TBLBolum b = db.TBLBolum.Where(x => x.BID ==k ).SingleOrDefault();
+                        }
+                        <td>@a.IID</td>
+                        <td>@a.IlacAdi</td>
+                        <td>@b.BAdi</td>
+                        <td>
+                            <div class="btn-group btn-block">
+                                <a href="/Hekim/IlacSil?IlacID=@a.IID" class="btn btn-danger">İlaç Sil</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th width="1%">ID</th>
+                    <th width="1%">İlaç Adı</th>
+                    <th width="1%">İlaç Kategori</th>
+                    <th width="1%">İşlem</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <!-- /.card-body -->
+</div>
+<div class="modal fade bd-example-modal-lg" id="hastaekle" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">İlaç Ekle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Html.BeginForm("_IlacEkle", "Hekim", FormMethod.Post, new { @class = "form-horizontal", @id = "form_sample_1", @enctype = "multipart/form-data" }))
+            {
+                <div class="modal-body">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>İlaç Adı:</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-check"></i></span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="İlaç Adı" id="IlacAdi" name="IlacAdi">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Çık</button>
+                    <button type="submit" class="btn btn-success">Ekle</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

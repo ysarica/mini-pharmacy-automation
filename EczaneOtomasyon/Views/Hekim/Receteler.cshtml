@@ -1,0 +1,229 @@
+﻿
+@{
+    ViewBag.Title = "Receteler";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using EczaneOtomasyon.Models;
+@section baslik{ Reçeteler}
+@section sitemap{ Reçeteler}
+@section title{ Reçeteler}
+@model IEnumerable<EczaneOtomasyon.Models.TBLRecete>
+@{
+    EczaneDB db = new EczaneDB();
+}
+
+<div class="card card-outline card-primarycard-outline card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Reçeteler (Sadece Yazdığınız Reçeteleri Görüntüleyebilirsiniz )</h3>
+        <div class="card-tools">
+        </div>
+    </div>
+
+
+    <!-- /.card-header -->
+    <div class="card-body table-responsive">
+        <table id="listele1" class="table table-bordered table-striped table-responsive">
+            <thead>
+                <tr>
+                    <th width="1%">Reçete No</th>
+                    <th width="1%">Doktor</th>
+                    <th width="1%">Hasta</th>
+                    <th width="1%">Tarih</th>
+                    <th width="1%">Durum</th>
+                    <th width="1%">İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var a in Model)
+                {
+                    <tr>
+                        @{
+                            TBLKullanici d = db.TBLKullanici.Where(x => x.KID == a.DoktorID).SingleOrDefault();
+                            TBLKullanici h = db.TBLKullanici.Where(x => x.KID == a.HastaID).SingleOrDefault();
+
+                        }
+                        <td>@a.RctID</td>
+                        <td>@d.AdSoyad</td>
+                        <td>@h.AdSoyad</td>
+                        <td>@a.Tarih</td>
+                        <td>@a.Durum</td>
+
+                        <td>
+                            <div class="btn-group btn-block">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-@a.RctID">Detay</button>
+                            </div>
+                        </td>
+                        @{
+                            TBLKullanici dok = db.TBLKullanici.Where(x => x.KID == a.DoktorID).SingleOrDefault();
+                            int bolıd = Convert.ToInt32(dok.KullaniciKat);
+                            TBLBolum bol = db.TBLBolum.Where(x => x.BID == bolıd).SingleOrDefault();
+                        }
+                        <div class="modal fade bd-example-modal-lg" id="modal-@a.RctID" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">İlaç Ekle</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="card-body">
+                                            <div class="row">
+
+                                                <div class="col-6">
+                                                    <div class="info-box bg-light">
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-text text-center text-muted">Hasta Adı</span>
+                                                            <span class="info-box-number text-center text-muted mb-0">@h.AdSoyad</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="info-box bg-light">
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-text text-center text-muted">Hasta TC</span>
+                                                            <span class="info-box-number text-center text-muted mb-0">
+                                                                @h.TC <span>
+                                                                </span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="info-box bg-light">
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-text text-center text-muted">Doktor Adı</span>
+                                                            <span class="info-box-number text-center text-muted mb-0">@d.AdSoyad</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="info-box bg-light">
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-text text-center text-muted">Doktor Bölümi</span>
+                                                            <span class="info-box-number text-center text-muted mb-0">
+                                                                @bol.BAdi <span>
+                                                                </span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="info-box bg-light">
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-text text-center text-muted">Reçete Durum</span>
+                                                            <span class="info-box-number text-center text-muted mb-0">
+                                                                @a.Durum <span>
+                                                                </span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="info-box bg-light">
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-text text-center text-muted">Reçete Tarih</span>
+                                                            <span class="info-box-number text-center text-muted mb-0">
+                                                                @a.Tarih <span>
+                                                                </span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12">
+                                                    <div class="info-box bg-light">
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-text text-center text-muted">Reçete Açıklama</span>
+                                                            <span class="info-box-number text-center text-muted mb-0">
+                                                                <span>
+                                                                    @a.ReceteAciklama
+                                                                </span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    @{
+                                                        List<TBLReceteIlac> ilac = db.TBLReceteIlac.Where(x => x.ReceteID == a.RctID).ToList();
+                                                    }
+                                                </div>
+                                                @foreach (var i in ilac)
+                                                {
+                                                    <div class="col-12">
+                                                        <div class="info-box bg-light">
+                                                            @{
+                                                                TBLIlaclar il = db.TBLIlaclar.Where(x => x.IID == i.IlacID).SingleOrDefault();
+                                                            }
+                                                            <div class="info-box-content">
+                                                                <span class="info-box-text text-center text-muted">İlaç:@il.IlacAdi</span>
+                                                                <span class="info-box-number text-center text-muted mb-0">
+                                                                    Adet : @i.Adet <span>
+                                                                    </span>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                                }
+
+
+                                            </div>
+
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Çık</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </tr>
+                            }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th width="1%">Reçete No</th>
+                    <th width="1%">Doktor</th>
+                    <th width="1%">Hasta</th>
+                    <th width="1%">Tarih</th>
+                    <th width="1%">Durum</th>
+                    <th width="1%">İşlem</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <!-- /.card-body -->
+</div>
+<div class="modal fade bd-example-modal-lg" id="hastaekle" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">İlaç Ekle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Html.BeginForm("_IlacEkle", "Hekim", FormMethod.Post, new { @class = "form-horizontal", @id = "form_sample_1", @enctype = "multipart/form-data" }))
+            {
+                <div class="modal-body">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>İlaç Adı:</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-check"></i></span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="İlaç Adı" id="IlacAdi" name="IlacAdi">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Çık</button>
+                    <button type="submit" class="btn btn-success">Ekle</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

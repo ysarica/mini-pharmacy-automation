@@ -1,0 +1,64 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using EczaneOtomasyon.Models;
+@section baslik{ Eczane}
+@section sitemap{ Eczane}
+@section title{ Eczane}
+@model IEnumerable<EczaneOtomasyon.Models.TBLKullanici>
+@{
+    EczaneDB db = new EczaneDB();
+}
+
+<div class="card card-outline card-primarycard-outline card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Reçete Görüntülenecek Hastayı Seçiniz</h3>
+        <div class="card-tools">
+        </div>
+    </div>
+
+
+    <!-- /.card-header -->
+    <div class="card-body table-responsive">
+        <table id="listele1" class="table table-bordered table-striped table-responsive">
+            <thead>
+                <tr>
+                    <th width="1%">ID</th>
+                    <th width="1%">Hasta Adı</th>
+                    <th width="1%">Hasta TC</th>
+                    <th width="1%">Hasta Cinsiyet</th>
+                    <th width="1%">İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var a in Model)
+                {
+                    <tr>
+                        <td>@a.KID</td>
+                        <td>@a.AdSoyad</td>
+                        <td>@a.TC</td>
+                        <td>@a.Cinsiyet</td>
+                        <td>
+                            <div class="btn-group btn-block">
+                                <a href="/Eczane/Recete?KID=@a.KID" class="btn btn-info"> Reçete Gör</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th width="1%">ID</th>
+                    <th width="1%">Hasta Adı</th>
+                    <th width="1%">Hasta TC</th>
+                    <th width="1%">Hasta Cinsiyet</th>
+                    <th width="1%">İşlem</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <!-- /.card-body -->
+</div>
